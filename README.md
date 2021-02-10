@@ -1,2 +1,2 @@
 # elements-of-computing-systems
-Completed projects from The Elements of Computing Systems
+Completed code for nand2tetris project in The Elements of Computing Systems
