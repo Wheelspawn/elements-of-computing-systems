@@ -41,6 +41,45 @@ CHIP ALU {
         zr, // 1 if (out == 0), 0 otherwise
         ng; // 1 if (out < 0),  0 otherwise
 
-    PARTS:
-   // Put you code here:
+    PARTS:    
+    // if (zx == 1) set x = 0
+    Mux16(a=x, b[0..15]=false, sel=zx, out=x1);
+    // !x
+    Not16(in=x1, out=notx);
+    // if (nx == 1) set x = !x
+    Mux16(a=x1, b=notx, sel=nx, out=x2);
+    
+    // if (zy == 1) set y = 0
+    Mux16(a=y, b[0..15]=false, sel=zy, out=y1);
+    // !y
+    Not16(in=y1, out=noty);
+    // if (ny == 1) set y = !y
+    Mux16(a=y1, b=noty, sel=ny, out=y2);
+    
+    // x + y
+    Add16(a=x2,b=y2,out=add1);
+    // x & y
+    And16(a=x2,b=y2,out=and1);
+    
+    // if (f == 1) set out = x + y
+    // if (f == 0) set out = x & y
+    Mux16(a=and1, b=add1, sel=f, out[0..7]=out1, out[8..15]=out2);
+
+    // !out
+    Not16(in[0..7]=out1,in[8..15]=out2,out=notout);
+    // if (no == 1) set out = !out
+    Mux16(a[0..7]=out1,a[8..15]=out2, b=notout, sel=no, out[0..7]=out3, out[8..15]=out4);
+    // out
+    Or16(a[0..7]=out3, a[8..15]=out4, b[0..7]=out3, b[8..15]=out4, out=out);
+    
+    // if (out == 0) set zr = 1
+    Or8Way(in=out3, out=zr1);
+    Or8Way(in=out4, out=zr2);
+    Or(a=zr1, b=zr2, out=zr3);
+    Not(in=zr3, out=zr);
+    
+    // (out < 0) set ng = 1
+    And16(a[0..7]=out3, a[8..15]=out4, b[0..7]=out3, b[8..15]=out4, out[15]=ng);
+    
 }
+
