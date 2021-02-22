@@ -16,5 +16,23 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    
+    // load/inc/reset toggle bit
+    Or(a=load,b=inc,out=load0);
+    Or(a=load0,b=reset,out=pcload);
+    
+    // out[t] + 1
+    Inc16(in=t0,out=pcinc);
+    
+    // if (inc[t] == 1)   out[t+1] = out[t] + 1
+    Mux16(a=t0,b=pcinc,sel=inc,out=out0);
+    
+    // if (load[t] == 1)   out[t+1] = out[t] + 1
+    Mux16(a=out0,b=in,sel=load,out=out1);
+    
+    // if      (reset[t] == 1) out[t+1] = 0
+    Mux16(a=out1,sel=reset,out=out2);
+    
+    Register(in=out2,load=pcload,out=t0,out=out);
+    
 }
