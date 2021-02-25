@@ -12,3 +12,29 @@
 // the screen should remain fully clear as long as no key is pressed.
 
 // Put your code here.
+
+(LOOP)
+
+  @24576  // ASCII code location
+
+  @BLACKEN
+  M;JEQ
+
+  @LOOP
+  0;JMP   // GOTO LOOP
+
+(CLEAR)   // clear
+  @i
+  M=24576
+  @16384
+  D=M-A   // count down from 24576 to 16384
+  @LOOP
+  D;JMP   // if M-A==0 GOTO LOOP else ...
+  @i
+  M=M-1   // i-=1
+
+(BLACKEN) // blacken
+  
+  
+  @LOOP
+  0;JMP   // GOTO LOOP
