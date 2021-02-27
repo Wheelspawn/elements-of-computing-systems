@@ -15,26 +15,64 @@
 
 (LOOP)
 
-  @24576  // ASCII code location
+  @KBD     // keyboard code location
+  D=M
 
   @BLACKEN
-  M;JEQ
+  D;JEQ
+
+  @CLEAR
+  0;JMP
 
   @LOOP
-  0;JMP   // GOTO LOOP
+  0;JMP    // GOTO LOOP
 
-(CLEAR)   // clear
-  @i
-  M=24576
+(CLEAR)
+
   @16384
-  D=M-A   // count down from 24576 to 16384
-  @LOOP
-  D;JMP   // if M-A==0 GOTO LOOP else ...
+  D=A     // D = 16384
   @i
-  M=M-1   // i-=1
+  M=D     // Mem[i] = 16384
+  @CLEARLOOP
+  0;JMP
 
-(BLACKEN) // blacken
-  
-  
+(CLEARLOOP)
+  @i
+  D=M     // D=Mem[i]
+
+  @END    // 24576
+  D=A-D   // count from 16384 to 24576
+
   @LOOP
-  0;JMP   // GOTO LOOP
+  D;JEQ   // if D-A==0 GOTO LOOP else ...
+
+  @i
+  M=M+1   // Mem[i] += 1
+
+  @CLEARLOOP
+  0;JMP   // GOTO CLEARLOOP
+  
+(BLACKEN)
+
+  @16384
+  D=A     // D = 16384
+  @i
+  M=D     // Mem[i] = 16384
+  @BLACKENLOOP
+  0;JMP
+
+(BLACKENLOOP)
+  @i
+  D=M     // D=Mem[i]
+
+  @END    // 24576
+  D=A-D   // count from 16384 to 24576
+
+  @LOOP
+  D;JEQ   // if D-A==0 GOTO LOOP else ...
+
+  @i
+  M=M+1   // Mem[i] += 1
+
+  @BLACKENLOOP
+  0;JMP   // GOTO BLACKENLOOP
